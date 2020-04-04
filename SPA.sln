@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPA.Web", "src\SPA.Web\SPA.Web.csproj", "{2D0F96D9-8711-4804-96AF-E8D93177B8E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPA.Tests", "tests\SPA.Tests\SPA.Tests.csproj", "{4A8108CB-9037-4FBA-8ECE-AE5F3EFA280A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPA.Data", "src\SPA.Data\SPA.Data.csproj", "{53C4C9BA-34C2-44B0-ACD7-FB79A73AE917}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D0F96D9-8711-4804-96AF-E8D93177B8E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D0F96D9-8711-4804-96AF-E8D93177B8E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D0F96D9-8711-4804-96AF-E8D93177B8E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D0F96D9-8711-4804-96AF-E8D93177B8E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A8108CB-9037-4FBA-8ECE-AE5F3EFA280A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A8108CB-9037-4FBA-8ECE-AE5F3EFA280A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A8108CB-9037-4FBA-8ECE-AE5F3EFA280A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A8108CB-9037-4FBA-8ECE-AE5F3EFA280A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53C4C9BA-34C2-44B0-ACD7-FB79A73AE917}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53C4C9BA-34C2-44B0-ACD7-FB79A73AE917}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53C4C9BA-34C2-44B0-ACD7-FB79A73AE917}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53C4C9BA-34C2-44B0-ACD7-FB79A73AE917}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
