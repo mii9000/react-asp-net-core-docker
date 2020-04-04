@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  web:
+    build:
+      context: .
+    ports:
+        - "56133:80"
+        - "44327:443"
