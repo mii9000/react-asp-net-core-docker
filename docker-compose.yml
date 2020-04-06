@@ -1,5 +1,9 @@
 version: '3.4'
 
+networks:
+  aspnetcoreapp-network:
+    driver: bridge
+
 services:
   web:
     build:
@@ -7,3 +11,17 @@ services:
     ports:
         - "56133:80"
         - "44327:443"
+    networks:
+      - aspnetcoreapp-network
+  database:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./dbscripts/init.sql:/docker-entrypoint-initdb.d/init.sql  
+    environment:
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "pass123"
+      POSTGRES_DB: "spa_db"
+    networks:
+      - aspnetcoreapp-network

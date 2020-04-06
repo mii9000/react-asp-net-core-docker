@@ -12,6 +12,12 @@ using Microsoft.Extensions.Options;
 
 namespace SPA.Web
 {
+    public class AuthSecrets
+    {
+        public string ClientId { get; set; }
+        public string ClientSecret { get; set; }
+    }
+
     public class Startup
     {
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
@@ -19,6 +25,11 @@ namespace SPA.Web
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: false, reloadOnChange: true);
+
+            if (env.IsDevelopment())
+            {
+                builder.AddUserSecrets<Startup>();
+            }
 
             Configuration = builder.Build();
         }
@@ -29,10 +40,25 @@ namespace SPA.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
-            
-            //register our services
 
-            services.AddControllersWithViews();
+            //register our services
+            services.Configure<AuthSecrets>(secrets => 
+            {
+                secrets.ClientId = Configuration["Authentication:Google:ClientId"];
+                secrets.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+            });
+
+            services.AddScoped<IJwtService, JwtService>();
+
+            services.AddAuthentication()
+            .AddGoogle(options =>
+            {
+                options.ClientId = Configuration["Authentication:Google:ClientId"];
+                options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                options.AuthorizationEndpoint = "https://localhost:5001";
+            });
+
+            services.AddControllersWithViews().AddNewtonsoftJson();
 
             services.AddApiVersioning(options => 
             {
@@ -64,6 +90,9 @@ namespace SPA.Web
             app.UseSpaStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

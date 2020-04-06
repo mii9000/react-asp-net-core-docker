@@ -32,4 +32,4 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-ENTRYPOINT [ "dotnet", "SPA.Web.dll", "--environment=Production" ]
+ENTRYPOINT [ "dotnet", "SPA.Web.dll" ]
