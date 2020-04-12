@@ -1,29 +1,49 @@
 import React from 'react';
-import GoogleLogin from 'react-google-login';
+import GoogleLogin, {GoogleLoginResponse, GoogleLoginResponseOffline} from 'react-google-login';
 import Axios from "axios";
+import { toast } from 'react-semantic-toasts';
 
-const responseGoogle = async (response: any) => {
-    const ss = await Axios.post('/api/v1/auth/login', {
-        token: response.getAuthResponse().id_token
-    }, {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
+interface GoogleErrorResponse {
+    error: string
+}
 
-    console.log(ss);
-}  
+const googleLoginSuccess = (response: GoogleLoginResponse | GoogleLoginResponseOffline): void => {
+    Axios.post('/api/v1/users/login', 
+    { token: (response as GoogleLoginResponse).getAuthResponse().id_token }, 
+    { headers: { 'Content-Type': 'application/json'} })
+    .then(axiosResponse => 
+        {
+            showToast('success', 'Login was successful')
+            console.log(axiosResponse);
+        }).catch(reason => showToast('error', reason));
+};
+
+const showToast = (type: 'success' | 'error', desc: string) => {
+    toast({
+        type: type,
+        title: type === 'success' ? 'Great news!' : 'Oops!',
+        description: desc,
+        animation: 'bounce',
+        time: 1500
+    });
+}
+
+const googleLoginError = (response: GoogleErrorResponse) => {
+    showToast('error', response.error)
+}
 
 const Login = () => {
     return (
-        <GoogleLogin
-            // get client id from backend
-            clientId="626059708897-jdfmn7erruscom7q7014vp57qnscscgc.apps.googleusercontent.com"
-            buttonText="Sign in with Google"
-            onSuccess={responseGoogle}
-            onFailure={responseGoogle}
-            cookiePolicy={'single_host_origin'}
-        />
+        <div className='center'>
+            <GoogleLogin
+                clientId="626059708897-jdfmn7erruscom7q7014vp57qnscscgc.apps.googleusercontent.com"
+                buttonText="To continue, sign in with Google"
+                onSuccess={googleLoginSuccess}
+                onFailure={googleLoginError}
+                cookiePolicy={'single_host_origin'}
+                theme="dark"
+            />
+        </div>
     )
 }
 

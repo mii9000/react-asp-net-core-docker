@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -9,27 +10,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using SPA.Web.Models;
+using SPA.Web.Services;
 
 namespace SPA.Web
 {
-    public class AuthSecrets
-    {
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
-    }
-
     public class Startup
     {
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: false, reloadOnChange: true);
-
-            if (env.IsDevelopment())
-            {
-                builder.AddUserSecrets<Startup>();
-            }
 
             Configuration = builder.Build();
         }
@@ -42,27 +36,44 @@ namespace SPA.Web
             services.AddOptions();
 
             //register our services
-            services.Configure<AuthSecrets>(secrets => 
+            services.Configure<AuthSecretsConfig>(secrets => 
             {
-                secrets.ClientId = Configuration["Authentication:Google:ClientId"];
-                secrets.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                secrets.ClientId = Configuration["Auth:Google:ClientId"];
+                secrets.ClientSecret = Configuration["Auth:Google:ClientSecret"];
             });
-
             services.AddScoped<IJwtService, JwtService>();
+            services.AddTransient<IRepository, Repository>
+                (provider => new Repository(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IUserService, UserService>();
 
-            services.AddAuthentication()
-            .AddGoogle(options =>
-            {
-                options.ClientId = Configuration["Authentication:Google:ClientId"];
-                options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
-                options.AuthorizationEndpoint = "https://localhost:5001";
-            });
+            services
+                .AddAuthentication(x => 
+                {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+               .AddJwtBearer(options =>
+               {
+                    var issuer = Configuration["Auth:Google:Audience"];
+                    var audience = Configuration["Auth:Google:ClientId"];
+                    var secret = Configuration["Auth:Google:ClientSecret"];
+
+                   options.TokenValidationParameters = new TokenValidationParameters
+                   {
+                       ValidateAudience = true,
+                       ValidateIssuer = true,
+                       ValidateLifetime = true,
+                       ValidateIssuerSigningKey = true,
+                       ValidIssuer = audience,
+                       ValidAudience = issuer,
+                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
+                   };
+               });
 
             services.AddControllersWithViews().AddNewtonsoftJson();
 
             services.AddApiVersioning(options => 
             {
-                //TODO move versioning to config
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.AssumeDefaultVersionWhenUnspecified = true;
             });

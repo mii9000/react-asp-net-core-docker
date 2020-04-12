@@ -5,29 +5,31 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SPA.Web;
+using SPA.Web.Models;
 
 public interface IJwtService
     {
-        string GetToken(string userAccountId, string issuer, string audience);
+        string GetToken(int userId, string email, string issuer, string audience);
     }
 
     public class JwtService : IJwtService
     {
-        private readonly AuthSecrets _jwtConfig;
+        private readonly AuthSecretsConfig _jwtConfig;
 
-        public JwtService(IOptions<AuthSecrets> jwtConfig)
+        public JwtService(IOptions<AuthSecretsConfig> jwtConfig)
         {
             _jwtConfig = jwtConfig.Value;
         }
 
-        public string GetToken(string userAccountId, string issuer, string audience)
+        public string GetToken(int userId, string email, string issuer, string audience)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig.ClientSecret));
             var mySigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, userAccountId)
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                new Claim(ClaimTypes.Email, email)
             };
 
             var token = new JwtSecurityToken(
