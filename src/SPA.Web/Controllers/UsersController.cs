@@ -27,17 +27,5 @@ namespace SPA.Web.Controllers
         [HttpPost("login")]
         public async Task<string> Login([FromBody] GoogleLogin login) 
             => await _userService.GetAppToken(login.Token); 
-
-        [Authorize]
-        [HttpPut("join/{groupId}")]
-        public async Task<IActionResult> Join(int groupId)
-        {
-            var user = HttpContext.User;
-            var userIdClaim = user.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrWhiteSpace(userIdClaim)) return BadRequest();
-            var userId = int.Parse(userIdClaim);
-            await _userService.AddUserToGroup(groupId, userId);
-            return NoContent();
-        }
     }
 }

@@ -40,6 +40,7 @@ namespace SPA.Web
             {
                 secrets.ClientId = Configuration["Auth:Google:ClientId"];
                 secrets.ClientSecret = Configuration["Auth:Google:ClientSecret"];
+                secrets.Issuer = Configuration["Auth:Google:Audience"];
             });
             services.AddScoped<IJwtService, JwtService>();
             services.AddTransient<IRepository, Repository>
@@ -64,8 +65,8 @@ namespace SPA.Web
                        ValidateIssuer = true,
                        ValidateLifetime = true,
                        ValidateIssuerSigningKey = true,
-                       ValidIssuer = audience,
-                       ValidAudience = issuer,
+                       ValidIssuer = issuer,
+                       ValidAudience = audience,
                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
                    };
                });
