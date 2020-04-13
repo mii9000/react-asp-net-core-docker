@@ -25,29 +25,28 @@ namespace SPA.Web.Controllers
             _groupService = groupService;
         }
 
-        [HttpPut("join/{id}")]
-        public async Task<IActionResult> Join([FromRoute]int id)
+        [HttpGet]
+        public async Task<ActionResult<UserGroupsResponse>> Get()
         {
-            var userId = GetUserId(HttpContext);
-            if(userId == 0) return BadRequest();
-            await _groupService.AddUserToGroup(id, userId);
+            var (UserId, Username) = HttpContext.GetUserClaims();
+            if(UserId == 0) return BadRequest();
+            return Ok(await _groupService.GetAllUserGroups(UserId, Username));
+        }
+
+        [HttpPost("{id}")]
+        public async Task<IActionResult> Post([FromRoute]int id)
+        {
+            var (UserId, Username) = HttpContext.GetUserClaims();
+            if(UserId == 0) return BadRequest();
+            await _groupService.AddUserToGroup(id, UserId);
             return NoContent();
         }
 
-        //TODO Validation for request
-        [HttpDelete("remove")]
-        public async Task<IActionResult> Remove([FromBody]RemoveUserFromGroupRequest model)
+        [HttpDelete("users/{userId}/groups/{groupId}")]
+        public async Task<IActionResult> Delete([FromRoute]int userId, [FromRoute]int groupId)
         {
-            await _groupService.RemoveUserFromGroup(model.GroupId, model.UserId);
+            await _groupService.RemoveUserFromGroup(groupId, userId);
             return NoContent();
-        }
-
-        private int GetUserId(HttpContext context)
-        {
-            var user = context.User;
-            var userIdClaim = user.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrWhiteSpace(userIdClaim)) return 0;
-            return int.Parse(userIdClaim);
         }
     }
 }

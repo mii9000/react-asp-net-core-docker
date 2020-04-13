@@ -9,7 +9,7 @@ using SPA.Web.Models;
 
 public interface IJwtService
     {
-        string GetToken(int userId, string email);
+        string GetToken(int userId, string email, string name);
     }
 
     public class JwtService : IJwtService
@@ -21,7 +21,7 @@ public interface IJwtService
             _jwtConfig = jwtConfig.Value;
         }
 
-        public string GetToken(int userId, string email)
+        public string GetToken(int userId, string email, string name)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig.ClientSecret));
             var mySigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -29,7 +29,8 @@ public interface IJwtService
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-                new Claim(ClaimTypes.Email, email)
+                new Claim(ClaimTypes.Email, email),
+                new Claim(ClaimTypes.Name, name)
             };
 
             var token = new JwtSecurityToken(

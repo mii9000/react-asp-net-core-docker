@@ -25,10 +25,11 @@ namespace SPA.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] GroupCreateOrUpdateRequest model)
+        public async Task<ActionResult<GroupResponse>> Post([FromBody] GroupCreateOrUpdateRequest model)
         {
-            var id = await _groupService.CreateGroup(model.Name, model.Description);
-            return Created("", new { id });
+            var (UserId, Username) = HttpContext.GetUserClaims();
+            var group = await _groupService.CreateGroup(model.Name, model.Description, UserId, Username);
+            return Created($"/groups/{group.Id}", group);
         }
 
         [HttpPut("{id}")]

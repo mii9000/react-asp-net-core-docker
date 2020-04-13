@@ -22,12 +22,13 @@ public class Repository : IRepository
         }
     }
 
-    public async Task<int> CreateGroup(string name, string description)
+    public async Task<Group> CreateGroup(string name, string description)
     {
         using (var dbConnection = Connection)
         {
             const string insert = "INSERT INTO groups(name, description) VALUES (@name, @description) RETURNING id";
-            return await dbConnection.ExecuteScalarAsync<int>(insert, new { name = name, description = description });
+            var id = await dbConnection.ExecuteScalarAsync<int>(insert, new { name = name, description = description });
+            return new Group { Id = id, Name = name, Description = description };
         }
     }
 
@@ -78,6 +79,15 @@ public class Repository : IRepository
         }
     }
 
+    public async Task<User> GetUser(int id)
+    {
+        using (var dbConnection = Connection)
+        {
+            const string query = "SELECT id as Id, name as Name, email as Email FROM users WHERE id = @id";
+            return await dbConnection.QueryFirstOrDefaultAsync<User>(query, new { id = id });
+        }
+    }
+
     public async Task<bool?> IsUserAdminOfGroup(int groupId, int userId)
     {
         using (var dbConnection = Connection)
@@ -87,12 +97,12 @@ public class Repository : IRepository
         }
     }
 
-    public async Task AddUserToGroup(int groupId, int userId)
+    public async Task AddUserToGroup(int groupId, int userId, bool isAdmin = false)
     {
         using (var dbConnection = Connection)
         {
-            const string insert = "INSERT INTO user_groups(group_id, user_id) VALUES (@groupId, @userId)";
-            await dbConnection.ExecuteAsync(insert, new { groupId = groupId, userId = userId });
+            const string insert = "INSERT INTO user_groups(group_id, user_id, is_admin) VALUES (@groupId, @userId, @isAdmin)";
+            await dbConnection.ExecuteAsync(insert, new { groupId = groupId, userId = userId, isAdmin });
         }
     }
 
@@ -104,4 +114,19 @@ public class Repository : IRepository
             await dbConnection.ExecuteAsync(delete, new { groupId = groupId, userId = userId });
         }
     }
+
+    public async Task<IEnumerable<UserGroup>> GetAllUserGroups()
+    {
+        using (var dbConnection = Connection)
+        {
+            string query = @"SELECT g.id as GroupId, g.name as GroupName, g.description as Description, 
+                            u.id as UserId, u.name as Username, ug.is_admin as IsAdmin  
+                            FROM user_groups as ug
+                            INNER JOIN users as u ON ug.user_id = u.id
+                            INNER JOIN groups as g ON ug.group_id = g.id
+                            WHERE ug.is_admin IS NOT NULL";
+            return await dbConnection.QueryAsync<UserGroup>(query);
+        }
+    }
+
 }

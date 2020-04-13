@@ -25,7 +25,7 @@ namespace SPA.Web.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<string> Login([FromBody] GoogleLogin login) 
-            => await _userService.GetAppToken(login.Token); 
+        public async Task<ActionResult<TokenResponse>> Login([FromBody] GoogleLogin login) 
+            => Ok(new TokenResponse { Token = (await _userService.GetAppToken(login.Token)) });
     }
 }

@@ -1,10 +1,10 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import userGroupReducer from "../features/user-group/userGroupSlice";
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
-  },
+    userGroups: userGroupReducer
+  }
 });
 
 export type RootState = ReturnType<typeof store.getState>;

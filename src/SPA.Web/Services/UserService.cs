@@ -33,7 +33,7 @@ namespace SPA.Web.Services
             if (user == null) userId = await _repository.CreateUser(result.Name, result.Email);
             
             //generate a token based on user info
-            return _jwtService.GetToken(userId, result.Email);
+            return _jwtService.GetToken(userId, result.Email, result.Name);
         }
     }
 }
