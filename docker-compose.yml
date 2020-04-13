@@ -1,7 +1,7 @@
 version: '3.4'
 
 networks:
-  aspnetcoreapp-network:
+  aspnetcoreapp:
     driver: bridge
 
 services:
@@ -9,10 +9,13 @@ services:
     build:
       context: .
     ports:
-        - "56133:80"
-        - "44327:443"
+      - "56133:80"
+      - "44327:443"
+    depends_on: 
+      - "database"
     networks:
-      - aspnetcoreapp-network
+      - aspnetcoreapp
+
   database:
     image: postgres
     ports:
@@ -25,4 +28,4 @@ services:
       POSTGRES_PASSWORD: "pass123"
       POSTGRES_DB: "spa_db"
     networks:
-      - aspnetcoreapp-network
+      - aspnetcoreapp
