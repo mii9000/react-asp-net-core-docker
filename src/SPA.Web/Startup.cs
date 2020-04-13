@@ -22,6 +22,7 @@ namespace SPA.Web
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
+                //NOTE: auth credentials should not be checked into source code repo
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: false, reloadOnChange: true);
 
@@ -42,10 +43,11 @@ namespace SPA.Web
                 secrets.ClientSecret = Configuration["Auth:Google:ClientSecret"];
                 secrets.Issuer = Configuration["Auth:Google:Audience"];
             });
-            services.AddScoped<IJwtService, JwtService>();
             services.AddTransient<IRepository, Repository>
                 (provider => new Repository(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IGroupService, GroupService>();
 
             services
                 .AddAuthentication(x => 

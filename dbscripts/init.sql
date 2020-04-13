@@ -53,6 +53,12 @@ INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(4, 10, false);
 INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(4, 11, false);
 INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(4, 5, false);
 
+
 SELECT SETVAL('users_id_seq', (SELECT MAX(id) FROM users));
 
 SELECT SETVAL('groups_id_seq', (SELECT MAX(id) FROM groups));
+
+
+SELECT currval('users_id_seq');
+
+SELECT currval('groups_id_seq');

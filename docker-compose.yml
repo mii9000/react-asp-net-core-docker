@@ -20,6 +20,7 @@ services:
     volumes:
       - ./dbscripts/init.sql:/docker-entrypoint-initdb.d/init.sql  
     environment:
+      # NOTE not to be used like this for real production environment
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "pass123"
       POSTGRES_DB: "spa_db"

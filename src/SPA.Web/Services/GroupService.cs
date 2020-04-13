@@ -5,10 +5,10 @@ namespace SPA.Web.Services
 {
     public interface IGroupService
     {
-        Task<bool> AddUserToGroup(int groupId, int userId);
-        Task<bool> RemoveUserFromGroup(int groupId, int userId);
-        Task CreateGroup(string name, string description);
-        Task UpdateGroup(int groupId, string name);
+        Task AddUserToGroup(int groupId, int userId);
+        Task RemoveUserFromGroup(int groupId, int userId);
+        Task<int> CreateGroup(string name, string description);
+        Task UpdateGroup(int groupId, string name, string description);
     }
 
     public class GroupService : IGroupService
@@ -20,29 +20,16 @@ namespace SPA.Web.Services
             _repository = repository;
         }
 
-        public async Task<bool> AddUserToGroup(int groupId, int userId)
-        {
-            var isUserAdminOfGroup = await _repository.IsUserAdminOfGroup(groupId, userId);
-            //user can be or not be the admin of the group
-            //but having a value returns means user is already part of the group
-            if(isUserAdminOfGroup.HasValue) return false;
-            await _repository.AddUserToGroup(groupId, userId);
-            return true;
-        }
-
-        public async Task<bool> RemoveUserFromGroup(int groupId, int userId)
-        {
-            var isUserAdminOfGroup = (await _repository.IsUserAdminOfGroup(groupId, userId)).GetValueOrDefault();
-            //user does not belong to group or not admin
-            if(!isUserAdminOfGroup) return false;
-            await _repository.RemoveUserFromGroup(groupId, userId);
-            return true;         
-        }
-
-        public async Task CreateGroup(string name, string description)
+        public async Task<int> CreateGroup(string name, string description)
             => await _repository.CreateGroup(name, description);
 
-        public async Task UpdateGroup(int groupId, string name)
-            => await _repository.UpdateGroup(groupId, name);
+        public async Task UpdateGroup(int groupId, string name, string description)
+            => await _repository.UpdateGroup(groupId, name, description);
+
+        public async Task AddUserToGroup(int groupId, int userId)
+            => await _repository.AddUserToGroup(groupId, userId);
+
+        public async Task RemoveUserFromGroup(int groupId, int userId)
+            => await _repository.RemoveUserFromGroup(groupId, userId);
     }
 }

@@ -24,24 +24,18 @@ namespace SPA.Web.Controllers
             _groupService = groupService;
         }
 
-        [HttpPut("add/{id}")]
-        public async Task<IActionResult> Add(int id)
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] GroupCreateOrUpdateRequest model)
         {
-            var userId = HttpContext.GetUserId();
-            if(userId == 0) return BadRequest();
-            var result = await _groupService.AddUserToGroup(id, userId);
-            if(result) return NoContent();
-            return BadRequest();
+            var id = await _groupService.CreateGroup(model.Name, model.Description);
+            return Created("", new { id });
         }
 
-        [HttpDelete("remove/{groupId}")]
-        public async Task<IActionResult> Remove(int id)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put([FromRoute]int id, [FromBody] GroupCreateOrUpdateRequest model)
         {
-            var userId = HttpContext.GetUserId();
-            if(userId == 0) return BadRequest();
-            var result = await _groupService.RemoveUserFromGroup(id, userId);
-            if(result) return NoContent();
-            return BadRequest();
+            await _groupService.UpdateGroup(id, model.Name, model.Description);
+            return NoContent();
         }
     }
 }
