@@ -25,7 +25,10 @@ export const GroupDetailsModal = (props: GroupDetailsModalProps) => {
     }
 
     return (
-        <Modal onClose={_ => setOpen(false)} open={open} trigger={<Button onClick={_ => setOpen(true)} icon><Icon name="edit" />Edit</Button>} size="tiny">
+        <Modal onClose={_ => setOpen(false)} open={open} 
+            trigger={<Button fluid={props.action === 'Add'} 
+            onClick={_ => setOpen(true)} icon>
+            <Icon name="edit" />{ props.action === 'Add' ? 'Add' : 'Edit' }</Button>} size="tiny">
             <Header icon="edit" content="Group Details" />
             <Modal.Content>
                 <Form>
