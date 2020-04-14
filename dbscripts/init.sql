@@ -38,18 +38,18 @@ INSERT INTO groups(id, name, description) VALUES(2, 'Doe Family', 'A group for t
 INSERT INTO groups(id, name, description) VALUES(3, 'Detectives', 'Come join if you are into the art of detection and solving problems');
 INSERT INTO groups(id, name, description) VALUES(4, 'Billion Dollar Club', 'Only for the high and mighty!');
 
+INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(1, 12, true);
 INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(1, 5, false);
 INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(1, 6, false);
 INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(1, 7, false);
-INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(1, 12, true);
 
 INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(2, 1, true);
 INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(2, 2, false);
 
+INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(3, 12, true);
 INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(3, 3, false);
 INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(3, 4, false);
 INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(3, 8, false);
-INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(3, 12, true);
 
 INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(4, 9, true);
 INSERT INTO user_groups(group_id, user_id, is_admin) VALUES(4, 10, false);

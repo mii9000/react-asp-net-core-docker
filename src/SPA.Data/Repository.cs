@@ -34,8 +34,6 @@ public class Repository : IRepository
 
     public async Task UpdateGroup(int id, string name, string description)
     {
-        //TODO get existing group first and then merge the name and description
-
         using (var dbConnection = Connection)
         {
             const string update = "UPDATE groups SET name = @name, description = @description WHERE id = @id";
