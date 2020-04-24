@@ -25,7 +25,7 @@
 ## Solution
 
 #### Overview
-Solution was approached by first drawing out ERD and application architecture on whiteboard. All initial questions and assumptions were drawn on the board right after reading the problem statement. 
+Solution was approached by first drawing out ERD and application architecture on whiteboard.
 
 #### SPA.Data
 This .NET Standard library encapsulates data layer and its logic so that if its required to move from one storage to a different kind of storage then very few changes would be required.
